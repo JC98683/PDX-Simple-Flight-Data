@@ -7,6 +7,11 @@
   "orientation": "portrait",
   "background_color": "#f5f7fb",
   "theme_color": "#f5f7fb",
-  "description": "PDX Simple Flight Data iPhone web app",
-  "icons": []
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    }
+  ]
 }

@@ -44,7 +44,7 @@
 
 </style>
 </head><body>
-<header><h1>PDX Simple Flight Data</h1><div class="hint">iPhone web app: host this folder, open index.html in Safari, then Share → Add to Home Screen.</div></header>
+<header><h1>PDX Simple Flight Data <span style='font-size:12px;color:#607087'>v1.2.7</span></h1><div class="hint">iPhone web app: host this folder, open index.html in Safari, then Share → Add to Home Screen.</div></header>
 <main><form id="flightForm" onsubmit="return false">
 <section class="card"><h2>Inbound Flight</h2>
 
@@ -154,13 +154,14 @@ function totals(){var pax=n(val('paxF'))+n(val('paxJ'))+n(val('paxW'))+n(val('pa
 function record(){totals();return {id:currentId||('id-'+Date.now()),savedAt:new Date().toISOString(),inbound:{date:val('date'),submittedBy:val('submittedBy'),airline:val('airline'),flightNo:val('flightNo'),eta:val('eta'),tsaStatus:val('tsaStatus'),totalPax:val('totalPax'),totalBags:val('totalBags'),wchr:val('wchr'),wchc:val('wchc'),connPaxTotal:val('connPaxTotal'),connBagsTotal:val('connBagsTotal'),petc:val('petc'),avih:val('avih'),svin:val('svin'),pax:{F:val('paxF'),J:val('paxJ'),W:val('paxW'),M:val('paxM'),UM:val('paxUM'),Inf:val('paxInf'),Child:val('paxChild')},missingBags:val('missingBags'),rushBags:val('rushBags'),notes:val('notes'),connections:readRows('connections')},outbound:{flights:readRows('outbounds'),notes:val('outboundNotes')}}}
 function fa(f){var id=(f.airline+f.flightNo).toUpperCase();return id?'https://www.flightaware.com/live/flight/'+encodeURIComponent(id):''}
 function pair(a,b){return '<span class="previewPair"><span class="lbl">'+esc(a)+'</span><span class="val">'+esc(b||'0')+'</span></span>'}
-function preview(){var r=record(),f=r.inbound,p=f.pax,h='<div class="previewKey">'+esc(f.airline)+' '+esc(f.flightNo)+' &nbsp; Date: '+esc(f.date)+' &nbsp; ETA: '+esc(f.eta)+'</div><div>TSA Status: <span class="badge '+(f.tsaStatus==='OPEN'?'open':f.tsaStatus==='CLOSED'?'closed':'')+'">'+esc(f.tsaStatus||'N/A')+'</span></div><div>Submitted By: <span class="badge">'+esc(val('submittedBy'))+'</span></div>';h+='<h3>Passengers</h3><div class="previewLine tight">'+pair('Total Pax',f.totalPax)+pair('WCHR',f.wchr)+pair('WCHC',f.wchc)+pair('Conn Pax',f.connPaxTotal)+'</div><div class="previewLine">'+pair('F',p.F)+pair('C/J',p.J)+pair('W',p.W)+pair('M',p.M)+pair('UM',p.UM)+pair('Inf',p.Inf)+pair('Child',p.Child)+'</div>';h+='<h3>Bags</h3><div class="previewLine tight">'+pair('Total Bags',f.totalBags)+pair('Conn Bags',f.connBagsTotal)+pair('Missing Bags',f.missingBags)+pair('Rush Bags',f.rushBags)+'</div>';h+='<h3>Animals</h3><div class="previewLine tight">'+pair('PETC',f.petc)+pair('AVIH',f.avih)+pair('SVIN',f.svin)+'</div>';if(f.notes)h+='<p><b>Inbound Notes:</b> '+esc(f.notes)+'</p>';function table(t,arr){if(!arr.length)return '';var x='<h3>'+t+'</h3><table class="connTable"><tr><th>Airline</th><th class="num">Flight</th><th>Dest</th><th>Gate</th><th class="num">ETD</th><th class="num">Pax</th><th class="num">Bags</th><th>Notes</th></tr>';for(var i=0;i<arr.length;i++){var c=arr[i];x+='<tr><td>'+esc(c.airline)+'</td><td class="num">'+esc(c.flightNo)+'</td><td>'+esc(String(c.dest||'').toUpperCase())+'</td><td>'+esc(c.gate)+'</td><td class="num">'+esc(c.etd)+'</td><td class="num">'+esc(c.pax)+'</td><td class="num">'+esc(c.bags)+'</td><td>'+esc(c.notes)+'</td></tr>'}return x+'</table>'}h+=table('Connecting Flights',f.connections)+table('Outbound',r.outbound.flights);if(r.outbound.notes)h+='<p><b>Outbound Notes:</b> '+esc(r.outbound.notes)+'</p>';var link=fa(f);if(link)h+='<a class="flightAware" href="'+esc(link)+'" target="_blank">FlightAware: '+esc(f.airline+f.flightNo)+'</a>';h+='<div class="acronyms"><b>Acronyms</b><div class="acronymGrid"><div>F = First Class</div><div>WCHR = Wheelchair</div><div>C/J = Business</div><div>WCHC = Cabin Wheelchair</div><div>W = Premium Economy</div><div>PETC = Pet in Cabin</div><div>M = Economy</div><div>AVIH = Animal in Hold</div><div>UM = Unaccompanied Minor</div><div>SVIN = Service Animal</div></div></div>';el('preview').innerHTML=h}
+function preview(){var r=record(),f=r.inbound,p=f.pax,h='<div class="previewKey">'+esc(f.airline)+' '+esc(f.flightNo)+' &nbsp; Date: '+esc(f.date)+' &nbsp; ETA: '+esc(fmtTime(f.eta))+'</div><div>TSA Status: <span class="badge '+(f.tsaStatus==='OPEN'?'open':f.tsaStatus==='CLOSED'?'closed':'')+'">'+esc(f.tsaStatus||'N/A')+'</span></div><div>Submitted By: <span class="badge">'+esc(f.submittedBy||'')+'</span></div>';h+='<h3>Passengers</h3><div class="previewLine tight">'+pair('Total Pax',f.totalPax)+pair('WCHR',f.wchr)+pair('WCHC',f.wchc)+pair('Conn Pax',f.connPaxTotal)+'</div><div class="previewLine">'+pair('F',p.F)+pair('C/J',p.J)+pair('W',p.W)+pair('M',p.M)+pair('UM',p.UM)+pair('Inf',p.Inf)+pair('Child',p.Child)+'</div>';h+='<h3>Bags</h3><div class="previewLine tight">'+pair('Total Bags',f.totalBags)+pair('Conn Bags',f.connBagsTotal)+pair('Missing Bags',f.missingBags)+pair('Rush Bags',f.rushBags)+'</div>';h+='<h3>Animals</h3><div class="previewLine tight">'+pair('PETC',f.petc)+pair('AVIH',f.avih)+pair('SVIN',f.svin)+'</div>';if(f.notes)h+='<p><b>Inbound Notes:</b> '+esc(f.notes)+'</p>';function table(t,arr){if(!arr.length)return '';var x='<h3>'+t+'</h3><table class="connTable"><tr><th>Airline</th><th class="num">Flight</th><th>Dest</th><th>Gate</th><th class="num">ETD</th><th class="num">Pax</th><th class="num">Bags</th><th>Notes</th></tr>';for(var i=0;i<arr.length;i++){var c=arr[i];x+='<tr><td>'+esc(c.airline)+'</td><td class="num">'+esc(c.flightNo)+'</td><td>'+esc(String(c.dest||'').toUpperCase())+'</td><td>'+esc(c.gate)+'</td><td class="num">'+esc(fmtTime(c.etd))+'</td><td class="num">'+esc(c.pax)+'</td><td class="num">'+esc(c.bags)+'</td><td>'+esc(c.notes)+'</td></tr>'}return x+'</table>'}h+=table('Connecting Flights',f.connections)+table('Outbound',r.outbound.flights);if(r.outbound.notes)h+='<p><b>Outbound Notes:</b> '+esc(r.outbound.notes)+'</p>';var link=fa(f);if(link)h+='<a class="flightAware" href="'+esc(link)+'" target="_blank">FlightAware: '+esc(f.airline+f.flightNo)+'</a>';h+='<div class="acronyms"><b>Acronyms</b><div class="acronymGrid"><div>F = First Class</div><div>WCHR = Wheelchair</div><div>C/J = Business</div><div>WCHC = Cabin Wheelchair</div><div>W = Premium Economy</div><div>PETC = Pet in Cabin</div><div>M = Economy</div><div>AVIH = Animal in Hold</div><div>UM = Unaccompanied Minor</div><div>SVIN = Service Animal</div></div></div>';el('preview').innerHTML=h}
 function cell(v,w,right){v=String(v==null?'':v);if(v.length>w)v=v.slice(0,w);var sp=' '.repeat(Math.max(0,w-v.length));return right?sp+v:v+sp}
 function row(cols){return cols.map(function(c){return cell(c[0],c[1],c[2])}).join('  ').replace(/\s+$/,'')}
 function emailText(){
  var r=record(),f=r.inbound,p=f.pax,lines=[];
  lines.push((f.airline+' '+f.flightNo).trim()+'    Date: '+(f.date||'')+'    ETA: '+(f.eta||''));
  lines.push('TSA Status: '+(f.tsaStatus||'N/A'));
+ lines.push('Submitted By: '+(f.submittedBy||''));
  lines.push('');
  lines.push('PASSENGERS');
  lines.push(row([['Total Pax',9],['WCHR',5,true],['WCHC',5,true],['Conn Pax',8,true]]));
@@ -179,7 +180,7 @@ function emailText(){
  if(f.connections.length){
    lines.push('');lines.push('CONNECTING FLIGHTS');
    lines.push(row([['Air',4],['Flt',5,true],['Dest',4],['Gate',5],['ETD',5,true],['Pax',4,true],['Bags',5,true],['Notes',20]]));
-   for(var i=0;i<f.connections.length;i++){var c=f.connections[i];lines.push(row([[c.airline||'',4],[c.flightNo||'',5,true],[String(c.dest||'').toUpperCase(),4],[c.gate||'',5],[c.etd||'',5,true],[c.pax||'',4,true],[c.bags||'',5,true],[c.notes||'',20]]));}
+   for(var i=0;i<f.connections.length;i++){var c=f.connections[i];lines.push(row([[c.airline||'',4],[c.flightNo||'',5,true],[String(c.dest||'').toUpperCase(),4],[c.gate||'',5],[fmtTime(c.etd),5,true],[c.pax||'',4,true],[c.bags||'',5,true],[c.notes||'',20]]));}
  }
  if(r.outbound.flights.length){
    lines.push('');lines.push('OUTBOUND');
@@ -209,17 +210,25 @@ function copyPrevAirline(newRow){
 }
 });} location.href='mailto:?subject='+encodeURIComponent('PDX Flight Data '+val('airline')+val('flightNo'))+'&body='+encodeURIComponent(body)}
 
-function text(){var r=record(),f=r.inbound,s=f.date+'\n'+(f.airline+' '+f.flightNo).trim()+'\n'+f.eta+'\n'+(f.tsaStatus||'N/A')+'\n\n';s+='Total Pax: '+pad(f.totalPax)+'\nTotal Bags: '+pad(f.totalBags)+'\nWCHR: '+pad(f.wchr)+'\nWCHC: '+pad(f.wchc)+'\nConn Pax: '+pad(f.connPaxTotal)+'\nConn Bags: '+pad(f.connBagsTotal)+'\nPETC: '+pad(f.petc)+'\nAVIH: '+pad(f.avih)+'\nSVIN: '+pad(f.svin)+'\n';if(f.connections.length){s+='\nCONNECTING FLIGHTS\n';for(var i=0;i<f.connections.length;i++){var c=f.connections[i];s+=(c.airline||'')+' '+pad(c.flightNo,4)+' '+String(c.dest||'').toUpperCase()+' Gate '+(c.gate||'')+' ETD '+(c.etd||'')+' Pax '+(c.pax||'')+' Bags '+(c.bags||'')+(c.notes?' '+c.notes:'')+'\n'}}var link=fa(f);if(link)s+='\nFlightAware: '+link;return s}
+function text(){var r=record(),f=r.inbound,s=f.date+'\n'+(f.airline+' '+f.flightNo).trim()+'\n'+fmtTime(f.eta)+'\n'+(f.tsaStatus||'N/A')+'\nSubmitted By: '+(f.submittedBy||'')+'\n\n';s+='Total Pax: '+pad(f.totalPax)+'\nTotal Bags: '+pad(f.totalBags)+'\nWCHR: '+pad(f.wchr)+'\nWCHC: '+pad(f.wchc)+'\nConn Pax: '+pad(f.connPaxTotal)+'\nConn Bags: '+pad(f.connBagsTotal)+'\nPETC: '+pad(f.petc)+'\nAVIH: '+pad(f.avih)+'\nSVIN: '+pad(f.svin)+'\n';if(f.connections.length){s+='\nCONNECTING FLIGHTS\n';for(var i=0;i<f.connections.length;i++){var c=f.connections[i];s+=(c.airline||'')+' '+pad(c.flightNo,4)+' '+String(c.dest||'').toUpperCase()+' Gate '+(c.gate||'')+' ETD '+(fmtTime(c.etd))+' Pax '+(c.pax||'')+' Bags '+(c.bags||'')+(c.notes?' '+c.notes:'')+'\n'}}var link=fa(f);if(link)s+='\nFlightAware: '+link;return s}
 function db(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}}
 function setdb(a){localStorage.setItem(KEY,JSON.stringify(a));saved()}
 function validate(){var req=document.querySelectorAll('[data-required]'),m=[];for(var i=0;i<req.length;i++)if(!String(req[i].value||'').trim()){var lab=req[i].parentNode.querySelector('label');m.push(lab?lab.textContent.replace(' *',''):'Required')}if(m.length){alert('Enter a value or NA for: '+m.join(', '));return false}return true}
-function save(){if(!validate())return;
+function save(){
+if(!validate())return;
 try{
   localStorage.setItem('pdxSimple.lastInboundAirline', val('airline'));
   localStorage.setItem('pdxSimple.lastSubmittedBy', val('submittedBy'));
 }catch(e){}
-var r=record(),a=db(),out=[];currentId=r.id;for(var i=0;i<a.length;i++)if(a[i].id!==r.id)out.push(a[i]);out.unshift(r);setdb(out);preview();alert('Saved on this device/browser.')}
-function saved(){var a=db(),h='';for(var i=0;i<a.length;i++){var f=a[i].inbound;h+='<div class="record"><b>'+esc(f.date)+' '+esc(f.airline)+esc(f.flightNo)+'</b> ETA '+esc(f.eta)+' Pax '+esc(f.totalPax)+'<br><button type="button" class="secondary" data-action="open" data-id="'+a[i].id+'">Open</button> <button type="button" class="danger" data-action="delete" data-id="'+a[i].id+'">Delete</button></div>'}el('saved').innerHTML=h||'No saved flights yet.';try{localStorage.setItem('test','1');localStorage.removeItem('test');el('status').textContent='Storage available. No setup required.'}catch(e){el('status').textContent='Storage unavailable. Use normal browser mode or export each record.'}}
+var r=record(),a=db(),out=[];
+currentId=r.id;
+for(var i=0;i<a.length;i++)if(a[i].id!==r.id)out.push(a[i]);
+out.unshift(r);
+setdb(out);
+preview();
+alert('Saved on this device/browser.')
+}
+function saved(){var a=db(),h='';for(var i=0;i<a.length;i++){var f=a[i].inbound;h+='<div class="record"><b>'+esc(f.date)+' '+esc(f.airline)+esc(f.flightNo)+'</b> ETA '+esc(fmtTime(f.eta))+' Pax '+esc(f.totalPax)+'<br><button type="button" class="secondary" data-action="open" data-id="'+a[i].id+'">Open</button> <button type="button" class="danger" data-action="delete" data-id="'+a[i].id+'">Delete</button></div>'}el('saved').innerHTML=h||'No saved flights yet.';try{localStorage.setItem('test','1');localStorage.removeItem('test');el('status').textContent='Storage available. No setup required.'}catch(e){el('status').textContent='Storage unavailable. Use normal browser mode or export each record.'}}
 function load(id){var a=db(),r=null;for(var i=0;i<a.length;i++)if(a[i].id===id)r=a[i];if(!r)return;newForm(false);currentId=r.id;var f=r.inbound,o=r.outbound||{},p=f.pax||{};['date','submittedBy','airline','flightNo','eta','tsaStatus','totalPax','totalBags','wchr','wchc','connPaxTotal','connBagsTotal','petc','avih','svin','missingBags','rushBags','notes'].forEach(function(k){set(k,f[k])});set('paxF',p.F);set('paxJ',p.J);set('paxW',p.W);set('paxM',p.M);set('paxUM',p.UM);set('paxInf',p.Inf);set('paxChild',p.Child);for(i=0;i<(f.connections||[]).length;i++)addRow('connections',f.connections[i]);for(i=0;i<(o.flights||[]).length;i++)addRow('outbounds',o.flights[i]);set('outboundNotes',o.notes);preview()}
 function del(id){if(!confirm('Delete saved flight?'))return;var a=db(),o=[];for(var i=0;i<a.length;i++)if(a[i].id!==id)o.push(a[i]);setdb(o);preview()}
 function newForm(withDate){currentId='';el('flightForm').reset();el('connections').innerHTML='';el('outbounds').innerHTML='';set('wchc','0');el('totalPax').removeAttribute('data-manual');el('connPaxTotal').removeAttribute('data-manual');el('connBagsTotal').removeAttribute('data-manual');if(withDate!==false)set('date',new Date().toISOString().slice(0,10));
@@ -275,7 +284,30 @@ function cleanTimeToken(t){return fmtTime(t)}
 
 
 
-function act(a,id){if(a==='addConnection')addRow('connections',{});else if(a==='addOutbound')addRow('outbounds',{});else if(a==='removeRow'){var row=id;while(row&&row.className!=='row')row=row.parentNode;if(row)row.parentNode.removeChild(row)}else if(a==='save')save();else if(a==='new')newForm(true);else if(a==='print')window.print();else if(a==='email')sendEmail();else if(a==='text')location.href='sms:?&body='+encodeURIComponent(text());else if(a==='json')download('pdx-flight-data.json','application/json',JSON.stringify(db(),null,2));else if(a==='csv')csv();else if(a==='open')load(id);else if(a==='delete')del(id);totals();preview();saved()}
+function act(a,id){if(a==='addConnection'){
+var newRow=addRow('connections',{});
+var rows=el('connections').children;
+if(rows.length>1){
+  var prev=rows[rows.length-2].querySelector('[data-k="airline"]');
+  var curr=newRow.querySelector('[data-k="airline"]');
+  if(prev&&curr)curr.value=prev.value;
+}
+var first=newRow.querySelector('[data-k="flightNo"]')||newRow.querySelector('input,select');
+if(first)first.focus();
+}else if(a==='addOutbound')addRow('outbounds',{});else if(a==='removeRow'){var row=id;while(row&&row.className!=='row')row=row.parentNode;if(row)row.parentNode.removeChild(row)}else if(a==='save')save();else if(a==='new')newForm(true);else if(a==='print')window.print();else if(a==='email')sendEmail();else if(a==='text')location.href='sms:?&body='+encodeURIComponent(text());else if(a==='json')download('pdx-flight-data.json','application/json',JSON.stringify(db(),null,2));else if(a==='csv')csv();else if(a==='open')load(id);else if(a==='delete')del(id);totals();preview();saved()}
+
+document.addEventListener('keydown',function(e){
+  var t=e.target;
+  if(e.key==='Tab' && !e.shiftKey && t && t.getAttribute('data-k')==='notes'){
+    var row=t;
+    while(row && row.className!=='row')row=row.parentNode;
+    if(row && row.parentNode && row.parentNode.id==='connections'){
+      e.preventDefault();
+      act('addConnection',null);
+    }
+  }
+});
+
 document.addEventListener('click',function(e){var t=e.target,a=t&&t.getAttribute('data-action');if(a){e.preventDefault();act(a,t.getAttribute('data-id')||t)}});
 document.addEventListener('input',function(e){var t=e.target;if(t&&t.getAttribute('data-k')==='dest')t.value=t.value.toUpperCase();if(t&&/^(totalPax|connPaxTotal|connBagsTotal)$/.test(t.id))t.setAttribute('data-manual','1');totals();preview()});
 document.addEventListener('change',function(e){
@@ -288,16 +320,6 @@ try{
 totals();preview()});
 fillAirlines(document);newForm(true);saved();
 })();
-
-document.addEventListener('keydown', function(e){
-  if(e.key === 'Tab'){
-    var t = e.target;
-    if(t && t.getAttribute('data-k') === 'notes'){
-      e.preventDefault();
-      document.querySelector('[data-action="addConnection"]').click();
-    }
-  }
-});
 
 </script>
 <script>
