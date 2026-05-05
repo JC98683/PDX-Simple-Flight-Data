@@ -2,8 +2,11 @@
   "name": "PDX Simple Flight Data",
   "short_name": "PDX Simple",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#f5f7fb",
   "theme_color": "#f5f7fb",
+  "description": "PDX Simple Flight Data iPhone web app",
   "icons": []
 }
