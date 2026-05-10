@@ -44,7 +44,7 @@
 
 </style>
 </head><body>
-<header><h1>PDX Simple Flight Data <span style='font-size:12px;color:#607087'>v1.2.7</span></h1><div class="hint">iPhone web app: host this folder, open index.html in Safari, then Share → Add to Home Screen.</div></header>
+<header><h1>PDX Simple Flight Data <span style='font-size:12px;color:#607087'>v1.3.8</span></h1><div class="hint">iPhone web app: host this folder, open index.html in Safari, then Share → Add to Home Screen.</div></header>
 <main><form id="flightForm" onsubmit="return false">
 <section class="card"><h2>Inbound Flight</h2>
 
@@ -62,7 +62,7 @@
 <div class="grid compact" style="margin-top:8px">
   <div class="reqBox">
     <label class="req">Airline</label>
-    <select id="airline" class="requiredField" data-airline data-required></select>
+    <select id="airline" class="requiredField" data-airline data-required><option value="">Select</option><option value="ASA">ASA</option><option value="BAW">BAW</option><option value="CFG">CFG</option><option value="ICE">ICE</option><option value="KLM">KLM</option><option value="VOI">VOI</option><option value="SWA">SWA</option><option value="DAL">DAL</option><option value="AAL">AAL</option></select>
   </div>
   <div class="reqBox">
     <label class="req">Flight No</label>
@@ -123,7 +123,7 @@
 <section class="card previewCard"><h2>Preview</h2><div id="preview"></div></section>
 <section class="card noPrint"><h2>Saved Flights</h2><div id="saved"></div><div id="status" class="status"></div></section>
 </form></main>
-<div class="actions"><button type="button" data-action="save">Save Flight</button><button type="button" class="secondary" data-action="new">New Flight</button><button type="button" class="secondary" data-action="print">Print</button><button type="button" class="secondary" data-action="email">Email</button><button type="button" class="secondary" data-action="text">Text</button><button type="button" class="secondary" data-action="json">Export JSON</button><button type="button" class="secondary" data-action="csv">Export CSV</button></div>
+<div class="actions"><button type="button" data-action="save">Save Flight</button><button type="button" class="secondary" data-action="new">New Flight</button><button type="button" class="secondary" data-action="print">Print</button><button type="button" class="secondary" data-action="email">Email</button><button type="button" class="secondary" data-action="text">Text ABM</button><button type="button" class="secondary" data-action="json">Export JSON</button><button type="button" class="secondary" data-action="csv">Export CSV</button></div>
 <script>
 (function(){
 
@@ -145,9 +145,9 @@ function set(id,v){var x=el(id);if(x)x.value=v||''}
 function esc(s){return String(s==null?'':s).replace(/[&<>\"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function n(v){v=String(v||'').trim(); if(v.toUpperCase()==='NA')return 0; var x=parseInt(v,10); return isNaN(x)?0:x}
 function pad(s,w){s=String(s==null?'':s);while(s.length<(w||4))s=' '+s;return s}
-function airlinesHTML(){var h='';for(var i=0;i<AIR.length;i++)h+='<option value="'+AIR[i][0]+'">'+AIR[i][0]+'</option>';return h.replace('><','>Select<')}
+function airlinesHTML(){return '<option value="">Select</option><option value="ASA">ASA</option><option value="BAW">BAW</option><option value="CFG">CFG</option><option value="ICE">ICE</option><option value="KLM">KLM</option><option value="VOI">VOI</option><option value="SWA">SWA</option><option value="DAL">DAL</option><option value="AAL">AAL</option>'}
 function fillAirlines(root){var list=(root||document).querySelectorAll('[data-airline]');for(var i=0;i<list.length;i++)list[i].innerHTML=airlinesHTML()}
-function rowHTML(){return '<div class="row"><div><label>Airline</label><select data-k="airline" data-airline></select></div><div><label>Flight No</label><input data-k="flightNo" maxlength="4" inputmode="numeric" class="num"></div><div><label>Dest</label><input data-k="dest" maxlength="3" autocapitalize="characters" style="text-transform:uppercase"></div><div><label>ETD</label><input data-k="etd" maxlength="4" inputmode="numeric" class="num"></div><div><label>Pax</label><input data-k="pax" maxlength="4" inputmode="numeric" class="num"></div><div><label>Bags</label><input data-k="bags" maxlength="4" inputmode="numeric" class="num"></div><div><label>Notes</label><input data-k="notes"></div><button type="button" class="danger" data-action="removeRow">Remove</button></div>'}
+function rowHTML(){return '<div class="row"><div><label>Airline</label><select data-k="airline" data-airline><option value="">Select</option><option value="ASA">ASA</option><option value="BAW">BAW</option><option value="CFG">CFG</option><option value="ICE">ICE</option><option value="KLM">KLM</option><option value="VOI">VOI</option><option value="SWA">SWA</option><option value="DAL">DAL</option><option value="AAL">AAL</option></select></div><div><label>Flight No</label><input data-k="flightNo" maxlength="4" inputmode="numeric" class="num"></div><div><label>Dest</label><input data-k="dest" maxlength="3" autocapitalize="characters" style="text-transform:uppercase"></div><div><label>ETD</label><input data-k="etd" maxlength="4" inputmode="numeric" class="num"></div><div><label>Pax</label><input data-k="pax" maxlength="4" inputmode="numeric" class="num"></div><div><label>Bags</label><input data-k="bags" maxlength="4" inputmode="numeric" class="num"></div><div><label>Notes</label><input data-k="notes"></div><button type="button" class="danger" data-action="removeRow">Remove</button></div>'}
 function addRow(containerId,data){var d=document.createElement('div');d.innerHTML=rowHTML();var row=d.firstChild;el(containerId).appendChild(row);fillAirlines(row);data=data||{};row.setAttribute('data-gate',data.gate||'');var ins=row.querySelectorAll('[data-k]');for(var i=0;i<ins.length;i++){var k=ins[i].getAttribute('data-k');ins[i].value=(k==='dest'?String(data[k]||'').toUpperCase():data[k]||'')}copyPrevAirline(row); return row}
 function readRows(containerId){var rows=el(containerId).children,out=[];for(var i=0;i<rows.length;i++){var o={gate:rows[i].getAttribute('data-gate')||''},has=!!o.gate,ins=rows[i].querySelectorAll('[data-k]');for(var j=0;j<ins.length;j++){var k=ins[j].getAttribute('data-k'),v=String(ins[j].value||'').trim();if(k==='dest')v=v.toUpperCase();o[k]=v;if(v)has=true}if(has)out.push(o)}return out}
 function totals(){var pax=n(val('paxF'))+n(val('paxJ'))+n(val('paxW'))+n(val('paxM'))+n(val('paxUM'))+n(val('paxChild'));if(!el('totalPax').getAttribute('data-manual') && !val('totalPax'))set('totalPax',pax||'');var c=readRows('connections'),cp=0,cb=0;for(var i=0;i<c.length;i++){cp+=n(c[i].pax);cb+=n(c[i].bags)}if(!el('connPaxTotal').getAttribute('data-manual'))set('connPaxTotal',cp||'');if(!el('connBagsTotal').getAttribute('data-manual'))set('connBagsTotal',cb||'')}
@@ -210,7 +210,23 @@ function copyPrevAirline(newRow){
 }
 });} location.href='mailto:?subject='+encodeURIComponent('PDX Flight Data '+val('airline')+val('flightNo'))+'&body='+encodeURIComponent(body)}
 
-function text(){var r=record(),f=r.inbound,s=f.date+'\n'+(f.airline+' '+f.flightNo).trim()+'\n'+fmtTime(f.eta)+'\n'+(f.tsaStatus||'N/A')+'\nSubmitted By: '+(f.submittedBy||'')+'\n\n';s+='Total Pax: '+pad(f.totalPax)+'\nTotal Bags: '+pad(f.totalBags)+'\nWCHR: '+pad(f.wchr)+'\nWCHC: '+pad(f.wchc)+'\nConn Pax: '+pad(f.connPaxTotal)+'\nConn Bags: '+pad(f.connBagsTotal)+'\nPETC: '+pad(f.petc)+'\nAVIH: '+pad(f.avih)+'\nSVIN: '+pad(f.svin)+'\n';if(f.connections.length){s+='\nCONNECTING FLIGHTS\n';for(var i=0;i<f.connections.length;i++){var c=f.connections[i];s+=(c.airline||'')+' '+pad(c.flightNo,4)+' '+String(c.dest||'').toUpperCase()+' Gate '+(c.gate||'')+' ETD '+(fmtTime(c.etd))+' Pax '+(c.pax||'')+' Bags '+(c.bags||'')+(c.notes?' '+c.notes:'')+'\n'}}var link=fa(f);if(link)s+='\nFlightAware: '+link;return s}
+function text(){
+var r=record(),f=r.inbound;
+var wheel=n(f.wchr)+n(f.wchc);
+var cabinPets=(String(f.petc||'')+(String(f.svin||'')?'/'+String(f.svin||''):''));
+var lines=[
+'Flight: '+(f.airline+' '+f.flightNo).trim(),
+(f.date||''),
+'ETA: '+fmtTime(f.eta),
+'TSA Status: '+(f.tsaStatus||'N/A'),
+'Submitted by: '+(f.submittedBy||''),
+'Total Pax: '+(f.totalPax||''),
+'Conn Pax: '+(f.connPaxTotal||''),
+'Wheelchairs: '+wheel,
+'Cabin Pets: '+cabinPets
+];
+return lines.join(String.fromCharCode(10));
+}
 function db(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}}
 function setdb(a){localStorage.setItem(KEY,JSON.stringify(a));saved()}
 function validate(){var req=document.querySelectorAll('[data-required]'),m=[];for(var i=0;i<req.length;i++)if(!String(req[i].value||'').trim()){var lab=req[i].parentNode.querySelector('label');m.push(lab?lab.textContent.replace(' *',''):'Required')}if(m.length){alert('Enter a value or NA for: '+m.join(', '));return false}return true}
@@ -294,7 +310,7 @@ if(rows.length>1){
 }
 var first=newRow.querySelector('[data-k="flightNo"]')||newRow.querySelector('input,select');
 if(first)first.focus();
-}else if(a==='addOutbound')addRow('outbounds',{});else if(a==='removeRow'){var row=id;while(row&&row.className!=='row')row=row.parentNode;if(row)row.parentNode.removeChild(row)}else if(a==='save')save();else if(a==='new')newForm(true);else if(a==='print')window.print();else if(a==='email')sendEmail();else if(a==='text')location.href='sms:?&body='+encodeURIComponent(text());else if(a==='json')download('pdx-flight-data.json','application/json',JSON.stringify(db(),null,2));else if(a==='csv')csv();else if(a==='open')load(id);else if(a==='delete')del(id);totals();preview();saved()}
+}else if(a==='addOutbound')addRow('outbounds',{});else if(a==='removeRow'){var row=id;while(row&&row.className!=='row')row=row.parentNode;if(row)row.parentNode.removeChild(row)}else if(a==='save')save();else if(a==='new')newForm(true);else if(a==='print')window.print();else if(a==='email')sendEmail();else if(a==='text'){var body=text();if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(body).catch(function(){});}location.href='sms:5642252725&body='+encodeURIComponent(body);}else if(a==='json')download('pdx-flight-data.json','application/json',JSON.stringify(db(),null,2));else if(a==='csv')csv();else if(a==='open')load(id);else if(a==='delete')del(id);totals();preview();saved()}
 
 document.addEventListener('keydown',function(e){
   var t=e.target;
